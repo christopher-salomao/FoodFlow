@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma/index";
+import { hash } from "bcryptjs";
 
 interface CreateUserProps {
   name: string;
@@ -17,11 +18,13 @@ class CreateUserService {
     if (userAlreadyExists) throw new Error("Usuário já cadastrado");
 
     try {
+      const passwordHash = await hash(password, 8);
+
       const user = await prismaClient.user.create({
         data: {
           name,
           email,
-          password,
+          password: passwordHash,
         },
       });
 
