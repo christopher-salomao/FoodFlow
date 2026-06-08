@@ -26,9 +26,17 @@ class CreateUserService {
           email,
           password: passwordHash,
         },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        }
       });
 
-      return user.createdAt;
+      return user;
     } catch (error) {
       return "Erro ao criar usuário";
     }
