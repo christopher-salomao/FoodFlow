@@ -9,8 +9,6 @@ interface AuthUserProps {
 
 class AuthUserService {
   async execute({ email, password }: AuthUserProps) {
-    console.log(email, password);
-
     // verificação de email
     const user = await prismaClient.user.findFirst({
       where: {
