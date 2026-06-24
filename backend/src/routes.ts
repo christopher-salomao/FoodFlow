@@ -3,9 +3,11 @@ import { Router } from "express";
 import { CreateUserController } from "./controllers/user/CreateUserController";
 import { AuthUserController } from "./controllers/user/AuthUserController";
 import { UserDetailsController } from "./controllers/user/UserDetailsController";
+import { CreateCategoryController } from "./controllers/category/CreateCategoryController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
+import { isAdmin } from "./middlewares/isAdmin";
 
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 
@@ -27,5 +29,13 @@ router.post(
 
 // get user details
 router.get("/me", isAuthenticated, new UserDetailsController().handle);
+
+// create a new category
+router.post(
+  "/categories",
+  isAuthenticated,
+  isAdmin,
+  new CreateCategoryController().handle,
+);
 
 export { router };
