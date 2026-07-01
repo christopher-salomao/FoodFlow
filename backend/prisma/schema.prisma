@@ -44,7 +44,7 @@ model Category {
 model Product {
   id          String  @id @default(uuid())
   name        String
-  price       Int
+  price       Int   // centavos
   description String
   bunner      String
   disable     Boolean @default(false)
