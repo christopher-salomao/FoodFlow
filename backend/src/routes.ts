@@ -5,6 +5,7 @@ import { AuthUserController } from "./controllers/user/AuthUserController";
 import { UserDetailsController } from "./controllers/user/UserDetailsController";
 import { CreateCategoryController } from "./controllers/category/CreateCategoryController";
 import { ListCategoriesController } from "./controllers/category/ListCategoriesController";
+import { RegisterProductsController } from "./controllers/product/RegisterProductsController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -46,6 +47,14 @@ router.post(
   isAdmin,
   validateSchema(createCategorySchema),
   new CreateCategoryController().handle,
+);
+
+// register a new product
+router.post(
+  "/products",
+  isAuthenticated,
+  isAdmin,
+  new RegisterProductsController().handle,
 );
 
 export { router };
