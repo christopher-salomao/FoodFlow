@@ -1,4 +1,7 @@
 import { Router } from "express";
+import multer from "multer";
+
+import uploadConfig from "./config/multer";
 
 import { CreateUserController } from "./controllers/user/CreateUserController";
 import { AuthUserController } from "./controllers/user/AuthUserController";
@@ -13,8 +16,11 @@ import { isAdmin } from "./middlewares/isAdmin";
 
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
+import { registerProductSchema } from "./schemas/productSchema";
 
 const router = Router();
+
+const upload = multer(uploadConfig);
 
 // create a new user
 router.post(
@@ -54,6 +60,8 @@ router.post(
   "/products",
   isAuthenticated,
   isAdmin,
+  upload.single("bunner"),
+  validateSchema(registerProductSchema),
   new RegisterProductsController().handle,
 );
 

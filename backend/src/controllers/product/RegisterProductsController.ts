@@ -3,9 +3,24 @@ import { RegisterProductsService } from "../../services/products/RegisterProduct
 
 class RegisterProductsController {
   async handle(req: Request, res: Response) {
+    const { name, description, price, category_id } = req.body;
+
+    if (!req.file) {
+      throw new Error("A imagem do produto é obrigatória");
+    }
+
     const RegisterProduct = new RegisterProductsService();
 
-    const product = await RegisterProduct.execute();
+    const product = await RegisterProduct.execute(
+      {
+        name,
+        description,
+        price,
+        category_id,
+        bunnerBuffer: req.file.buffer,
+        bunnerName: req.file.originalname,
+      }
+    );
 
     res.json(product);
   }
