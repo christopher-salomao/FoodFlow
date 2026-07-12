@@ -14,6 +14,7 @@ import { DeleteProductController } from "./controllers/product/DeleteProductCont
 import { ListProductByCategoryController } from "./controllers/product/ListProductByCategoryController";
 import { CreateOrderController } from "./controllers/order/CreateOrderController";
 import { ListOrderController } from "./controllers/order/ListOrderController";
+import { AddItemToOrderController } from "./controllers/order/AddItemToOrderController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -21,7 +22,7 @@ import { isAdmin } from "./middlewares/isAdmin";
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
 import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
-import { createOrderSchema, listOrderSchema } from "./schemas/orderSchema";
+import { createOrderSchema, listOrderSchema, addItemToOrderSchema } from "./schemas/orderSchema";
 
 const router = Router();
 
@@ -109,6 +110,14 @@ router.get(
   isAuthenticated,
   validateSchema(listOrderSchema),
   new ListOrderController().handle,
+);
+
+// add an item to an order
+router.post(
+  "/order/add",
+  isAuthenticated,
+  validateSchema(addItemToOrderSchema),
+  new AddItemToOrderController().handle,
 );
 
 export { router };
