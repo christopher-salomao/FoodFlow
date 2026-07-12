@@ -4,7 +4,7 @@ import { ListProductByCategoryService } from "../../services/products/ListProduc
 class ListProductByCategoryController {
   async handle(req: Request, res: Response) {
     const category_id = req.query.category_id as string;
-    const disabled = req.query.disabled as string | undefined;
+    const disabled = req.query?.disabled as string | undefined;
 
     const listProductByCategoryService = new ListProductByCategoryService();
     const products = await listProductByCategoryService.execute({

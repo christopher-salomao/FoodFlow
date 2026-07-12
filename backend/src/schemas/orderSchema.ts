@@ -2,7 +2,16 @@ import { z } from "zod";
 
 export const createOrderSchema = z.object({
   body: z.object({
-    table: z.string({ message: "A mesa precisa ser um número" }).min(1, { message: "A mesa é obrigatória" }).regex(/^\d+$/, { message: "A mesa precisa ser um número" }),
-    products: z.array(z.string()),
+    customer_name: z.string().optional(),
+    table: z
+      .number({ message: "O número da mesa é obrigatório" })
+      .int({ message: "O número da mesa deve ser um número inteiro" })
+      .positive({ message: "O número da mesa deve ser um número positivo" }),
+  }),
+});
+
+export const listOrderSchema = z.object({
+  query: z.object({
+    draft: z.string().optional(),
   }),
 });

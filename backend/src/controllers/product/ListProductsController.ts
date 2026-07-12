@@ -3,7 +3,7 @@ import { ListProductsService } from "../../services/products/ListProductsService
 
 class ListProductsController {
   async handle(req: Request, res: Response) {
-    const disabled = req.query.disabled as string | undefined;
+    const disabled = req.query?.disabled as string | undefined;
 
     const listProduct = new ListProductsService();
 

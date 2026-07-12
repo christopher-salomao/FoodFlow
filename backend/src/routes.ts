@@ -12,14 +12,16 @@ import { RegisterProductsController } from "./controllers/product/RegisterProduc
 import { ListProductsController } from "./controllers/product/ListProductsController";
 import { DeleteProductController } from "./controllers/product/DeleteProductController";
 import { ListProductByCategoryController } from "./controllers/product/ListProductByCategoryController";
+import { CreateOrderController } from "./controllers/order/CreateOrderController";
+import { ListOrderController } from "./controllers/order/ListOrderController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
 import { isAdmin } from "./middlewares/isAdmin";
-
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
 import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
+import { createOrderSchema, listOrderSchema } from "./schemas/orderSchema";
 
 const router = Router();
 
@@ -91,6 +93,22 @@ router.get(
   isAuthenticated,
   validateSchema(listProductByCategorySchema),
   new ListProductByCategoryController().handle,
+);
+
+// create a new order
+router.post(
+  "/order",
+  isAuthenticated,
+  validateSchema(createOrderSchema),
+  new CreateOrderController().handle,
+);
+
+// list all orders
+router.get(
+  "/orders",
+  isAuthenticated,
+  validateSchema(listOrderSchema),
+  new ListOrderController().handle,
 );
 
 export { router };
