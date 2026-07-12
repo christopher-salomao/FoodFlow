@@ -52,25 +52,29 @@ Requisição HTTP → Rotas → Middlewares → Controller → Service → Banco
 
 | Tecnologia         | Versão  | Finalidade                                   |
 | ------------------ | ------- | -------------------------------------------- |
-| **express**        | ^5.1.0  | Framework web para criação de APIs REST      |
-| **@prisma/client** | ^6.19.0 | ORM para comunicação com banco de dados      |
+| **express**        | ^5.2.1  | Framework web para criação de APIs REST      |
+| **@prisma/client** | ^7.6.0  | ORM para comunicação com banco de dados      |
 | **typescript**     | ^5.9.3  | Superset JavaScript com tipagem estática     |
-| **zod**            | ^4.1.12 | Biblioteca de validação de schemas e tipagem |
+| **zod**            | ^4.3.6  | Biblioteca de validação de schemas e tipagem |
 | **bcryptjs**       | ^3.0.3  | Criptografia de senhas                       |
-| **jsonwebtoken**   | ^9.0.2  | Geração e validação de tokens JWT            |
-| **cors**           | ^2.8.5  | Middleware para habilitar CORS               |
-| **dotenv**         | ^17.2.3 | Carregamento de variáveis de ambiente        |
-| **tsx**            | ^4.20.6 | Executor TypeScript para desenvolvimento     |
+| **jsonwebtoken**   | ^9.0.3  | Geração e validação de tokens JWT            |
+| **cors**           | ^2.8.6  | Middleware para habilitar CORS               |
+| **dotenv**         | ^17.4.0 | Carregamento de variáveis de ambiente        |
+| **tsx**            | ^4.21.0 | Executor TypeScript para desenvolvimento     |
+| **multer**         | ^2.2.0  | Middleware para upload de arquivos           |
+| **cloudinary**     | ^2.10.0 | Upload de imagens para o Cloudinary          |
 
 ### Dependências de Desenvolvimento
 
-| Tecnologia              | Versão   | Finalidade                    |
-| ----------------------- | -------- | ----------------------------- |
-| **@types/express**      | ^5.0.5   | Tipos TypeScript para Express |
-| **@types/cors**         | ^2.8.19  | Tipos TypeScript para CORS    |
-| **@types/jsonwebtoken** | ^9.0.10  | Tipos TypeScript para JWT     |
-| **@types/node**         | ^24.10.0 | Tipos TypeScript para Node.js |
-| **prisma**              | ^6.19.0  | CLI do Prisma ORM             |
+| Tecnologia              | Versão   | Finalidade                         |
+| ----------------------- | -------- | ---------------------------------- |
+| **@types/express**      | ^5.0.6   | Tipos TypeScript para Express      |
+| **@types/cors**         | ^2.8.19  | Tipos TypeScript para CORS         |
+| **@types/jsonwebtoken** | ^9.0.10  | Tipos TypeScript para JWT          |
+| **@types/node**         | ^25.5.2  | Tipos TypeScript para Node.js      |
+| **@types/multer**       | ^2.2.0   | Tipos TypeScript para Multer       |
+| **prisma**              | ^6.19.3  | CLI do Prisma ORM                  |
+
 
 ### Banco de Dados
 
@@ -96,10 +100,15 @@ backend/
 │   │   ├── category/
 │   │   │   ├── CreateCategoryController.ts
 │   │   │   └── ListCategoriesController.ts
+│   │   ├── product/
+│   │   │   └── RegisterProductsController.ts
 │   │   └── user/
 │   │       ├── AuthUserController.ts
 │   │       ├── CreateUserController.ts
 │   │       └── UserDetailsController.ts
+│   ├── config/               # Configurações auxiliares
+│   │   ├── cloudinary.ts
+│   │   └── multer.ts
 │   ├── generated/            # Código gerado pelo Prisma
 │   │   └── prisma/
 │   │       ├── client.ts
@@ -120,6 +129,8 @@ backend/
 │   │   ├── category/
 │   │   │   ├── CreateCategoryService.ts
 │   │   │   └── ListCategoriesService.ts
+│   │   ├── products/
+│   │   │   └── RegisterProductsService.ts
 │   │   └── user/
 │   │       ├── AuthUserService.ts
 │   │       ├── CreateUserService.ts
@@ -412,20 +423,22 @@ Valida criação de categorias:
 
 ### Product Schemas (`schemas/productSchema.ts`)
 
-#### **createProductSchema**
+#### **registerProductSchema**
 
-Valida criação de produtos:
+Valida o cadastro de produtos:
 
 ```typescript
 {
   body: {
-    name: string (min: 3 caracteres),
-    description: string (min: 3 caracteres),
-    price: number inteiro (centavos, min: 3),
-    category_id: string (min: 3 caracteres)
+    name: string (obrigatório),
+    description: string (obrigatório),
+    price: string numérica (mínimo 3 caracteres),
+    category_id: string (obrigatório)
   }
 }
 ```
+
+**Observação**: a imagem do produto é enviada via multipart/form-data no campo `bunner` e validada no controller, antes da criação do produto.
 
 ### Order Schemas (`schemas/orderSchema.ts`)
 
@@ -608,6 +621,54 @@ Authorization: Bearer <token>
 
 ---
 
+### **Produtos**
+
+#### **POST /products**
+
+Cadastra um novo produto no sistema, incluindo upload de imagem para o Cloudinary.
+
+**Middlewares**: `isAuthenticated`, `isAdmin`, `upload.single("bunner")`, `validateSchema(registerProductSchema)`
+
+**Permissão**: Apenas usuários com role ADMIN
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Body** (multipart/form-data):
+
+```text
+name: "Pizza Pepperoni"
+description: "Pizza saborosa com pepperoni"
+price: "3500"
+category_id: "uuid-da-categoria"
+bunner: <arquivo de imagem>
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "id": "uuid-gerado",
+  "name": "Pizza Pepperoni",
+  "description": "Pizza saborosa com pepperoni",
+  "price": 3500,
+  "category_id": "uuid-da-categoria",
+  "bunner": "https://res.cloudinary.com/....jpg",
+  "createdAt": "2025-11-11T10:30:00.000Z"
+}
+```
+
+**Observações**:
+
+- A imagem é enviada para o Cloudinary e o link retornado é salvo no campo `bunner`
+- O campo `price` é recebido como string e convertido para inteiro em centavos
+- O produto só é criado se a categoria informada existir
+
+---
+
 ## 🔄 Fluxo de Requisição
 
 ### Exemplo Completo: Criação de Usuário
@@ -679,6 +740,34 @@ Authorization: Bearer <token>
    - Ordena por nome (asc)
    ↓
 4. Resposta HTTP 200 com array de categorias
+```
+
+### Fluxo: Cadastro de Produto
+
+```
+1. POST /products
+   ↓
+2. Middleware: isAuthenticated
+   - Valida token JWT
+   - Se inválido → 401
+   ↓
+3. Middleware: isAdmin
+   - Verifica se o usuário é ADMIN
+   - Se não for → 401
+   ↓
+4. Middleware: upload.single("bunner")
+   - Recebe o arquivo de imagem do formulário
+   ↓
+5. Middleware: validateSchema(registerProductSchema)
+   - Valida name, description, price e category_id
+   ↓
+6. RegisterProductsController → RegisterProductsService
+   - Valida se a categoria existe
+   - Verifica se o produto já está cadastrado
+   - Faz upload da imagem para o Cloudinary
+   - Cria o produto no banco
+   ↓
+7. Resposta HTTP 200 com os dados do produto criado
 ```
 
 ---

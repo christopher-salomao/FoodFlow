@@ -7,8 +7,8 @@ interface RegisterProductsProps {
   description: string;
   price: string;
   category_id: string;
-  bunnerBuffer: Buffer;
-  bunnerName: string;
+  bannerBuffer: Buffer;
+  bannerName: string;
 }
 
 class RegisterProductsService {
@@ -17,8 +17,8 @@ class RegisterProductsService {
     description,
     price,
     category_id,
-    bunnerBuffer,
-    bunnerName,
+    bannerBuffer,
+    bannerName,
   }: RegisterProductsProps) {
     const categoryExists = await prismaClient.category.findFirst({
       where: {
@@ -49,7 +49,7 @@ class RegisterProductsService {
           {
             folder: "products",
             resource_type: "image",
-            public_id: `${Date.now()}-${bunnerName.split(".")[0]}`,
+            public_id: `${Date.now()}-${bannerName.split(".")[0]}`,
           },
           (error, result) => {
             if (error) reject(error);
@@ -57,7 +57,7 @@ class RegisterProductsService {
           },
         );
         // criar o stream do buffer e fazer pipe(envio) para o cloudinary
-        const bufferStream = Readable.from(bunnerBuffer);
+        const bufferStream = Readable.from(bannerBuffer);
         bufferStream.pipe(uploadStream);
       });
 
@@ -73,7 +73,7 @@ class RegisterProductsService {
         description,
         price: parseInt(price),
         category_id,
-        bunner: bunnerUrl,
+        banner: bunnerUrl,
       },
       select: {
         id: true,

@@ -17,8 +17,8 @@ class RegisterProductsController {
         description,
         price,
         category_id,
-        bunnerBuffer: req.file.buffer,
-        bunnerName: req.file.originalname,
+        bannerBuffer: req.file.buffer,
+        bannerName: req.file.originalname,
       }
     );
 

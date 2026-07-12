@@ -9,6 +9,9 @@ import { UserDetailsController } from "./controllers/user/UserDetailsController"
 import { CreateCategoryController } from "./controllers/category/CreateCategoryController";
 import { ListCategoriesController } from "./controllers/category/ListCategoriesController";
 import { RegisterProductsController } from "./controllers/product/RegisterProductsController";
+import { ListProductsController } from "./controllers/product/ListProductsController";
+import { DeleteProductController } from "./controllers/product/DeleteProductController";
+import { ListProductByCategoryController } from "./controllers/product/ListProductByCategoryController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -16,7 +19,7 @@ import { isAdmin } from "./middlewares/isAdmin";
 
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
-import { registerProductSchema } from "./schemas/productSchema";
+import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
 
 const router = Router();
 
@@ -60,9 +63,34 @@ router.post(
   "/products",
   isAuthenticated,
   isAdmin,
-  upload.single("bunner"),
+  upload.single("banner"),
   validateSchema(registerProductSchema),
   new RegisterProductsController().handle,
+);
+
+// list all products
+router.get(
+  "/products",
+  isAuthenticated,
+  validateSchema(listProductSchema),
+  new ListProductsController().handle,
+);
+
+// disable a product
+router.delete(
+  "/products",
+  isAuthenticated,
+  isAdmin,
+  validateSchema(deleteProductSchema),
+  new DeleteProductController().handle,
+);
+
+// list products by category
+router.get(
+  "/category/products",
+  isAuthenticated,
+  validateSchema(listProductByCategorySchema),
+  new ListProductByCategoryController().handle,
 );
 
 export { router };

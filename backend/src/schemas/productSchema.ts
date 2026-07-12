@@ -19,3 +19,26 @@ export const registerProductSchema = z.object({
     }),
   }),
 });
+
+export const listProductSchema = z.object({
+  query: z.object({
+    disabled: z.string().optional(),
+  }),
+});
+
+export const deleteProductSchema = z.object({
+  query: z.object({
+    product_id: z.string({
+      message: "O id do produto é obrigatório",
+    }),
+  }),
+});
+
+export const listProductByCategorySchema = z.object({
+  query: z.object({
+    category_id: z.string({
+      message: "O id da categoria é obrigatório",
+    }),
+    disabled: z.string().optional(),
+  }),
+});
