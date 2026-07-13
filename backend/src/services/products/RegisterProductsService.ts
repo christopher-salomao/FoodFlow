@@ -41,7 +41,7 @@ class RegisterProductsService {
     }
 
     // Enviar para o Cloudinary e pegar o link da imagem
-    let bunnerUrl: string;
+    let bannerUrl: string;
 
     try {
       const result = await new Promise<any>((resolve, reject) => {
@@ -61,7 +61,7 @@ class RegisterProductsService {
         bufferStream.pipe(uploadStream);
       });
 
-      bunnerUrl = result.secure_url;
+      bannerUrl = result.secure_url;
     } catch (err) {
       console.error(err);
       throw new Error("Erro ao fazer upload da imagem");
@@ -73,7 +73,7 @@ class RegisterProductsService {
         description,
         price: parseInt(price),
         category_id,
-        banner: bunnerUrl,
+        banner: bannerUrl,
       },
       select: {
         id: true,
@@ -81,7 +81,7 @@ class RegisterProductsService {
         description: true,
         price: true,
         category_id: true,
-        bunner: true,
+        banner: true,
         createdAt: true,
       },
     })

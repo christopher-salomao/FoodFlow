@@ -26,3 +26,9 @@ export const addItemToOrderSchema = z.object({
       .positive({ message: "A quantidade deve ser um número positivo" }),
   }),
 });
+
+export const removeOrderItemSchema = z.object({
+  query: z.object({
+    order_item_id: z.string({ message: "O ID do item do pedido deve ser um texto" }).min(1, { message: "O ID do item do pedido é obrigatório" }),
+  }),
+});
