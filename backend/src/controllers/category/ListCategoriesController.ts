@@ -3,8 +3,8 @@ import { ListCategoriesService } from "../../services/category/ListCategoriesSer
 
 class ListCategoriesController {
   async handle(_req: Request, res: Response) {
-    const listCategoriesService = new ListCategoriesService();
-    const categories = await listCategoriesService.execute();
+    const listCategories = new ListCategoriesService();
+    const categories = await listCategories.execute();
 
     res.status(200).json(categories);
   }

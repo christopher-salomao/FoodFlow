@@ -17,6 +17,7 @@ import { ListOrderController } from "./controllers/order/ListOrdersController";
 import { AddItemToOrderController } from "./controllers/order/AddItemToOrderController";
 import { RemoveOrderItemController } from "./controllers/order/RemoveItemController";
 import { OrderDetailsController } from "./controllers/order/OrderDetailsController";
+import { SendOrderController } from "./controllers/order/SendOrderController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -24,7 +25,7 @@ import { isAdmin } from "./middlewares/isAdmin";
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
 import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
-import { createOrderSchema, listOrderSchema, addItemToOrderSchema, removeOrderItemSchema, orderDetailsSchema } from "./schemas/orderSchema";
+import { createOrderSchema, listOrderSchema, addItemToOrderSchema, removeOrderItemSchema, singleOrderSchema, sendOderSchema } from "./schemas/orderSchema";
 
 const router = Router();
 
@@ -134,8 +135,16 @@ router.delete(
 router.get(
   "/order/details",
   isAuthenticated,
-  validateSchema(orderDetailsSchema),
+  validateSchema(singleOrderSchema),
   new OrderDetailsController().handle,
+);
+
+// send an order
+router.patch(
+  "/order/send",
+  isAuthenticated,
+  validateSchema(sendOderSchema),
+  new SendOrderController().handle,
 );
 
 export { router };

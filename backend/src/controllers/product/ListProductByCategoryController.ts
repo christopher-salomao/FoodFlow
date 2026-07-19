@@ -6,8 +6,8 @@ class ListProductByCategoryController {
     const category_id = req.query.category_id as string;
     const disabled = req.query?.disabled as string | undefined;
 
-    const listProductByCategoryService = new ListProductByCategoryService();
-    const products = await listProductByCategoryService.execute({
+    const listProductByCategory = new ListProductByCategoryService();
+    const products = await listProductByCategory.execute({
       category_id,
       disabled,
     });
