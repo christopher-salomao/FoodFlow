@@ -13,9 +13,10 @@ import { ListProductsController } from "./controllers/product/ListProductsContro
 import { DeleteProductController } from "./controllers/product/DeleteProductController";
 import { ListProductByCategoryController } from "./controllers/product/ListProductByCategoryController";
 import { CreateOrderController } from "./controllers/order/CreateOrderController";
-import { ListOrderController } from "./controllers/order/ListOrderController";
+import { ListOrderController } from "./controllers/order/ListOrdersController";
 import { AddItemToOrderController } from "./controllers/order/AddItemToOrderController";
-import { RemoveOrderItemController } from "./controllers/order/RemoveOrderItemController";
+import { RemoveOrderItemController } from "./controllers/order/RemoveItemController";
+import { OrderDetailsController } from "./controllers/order/OrderDetailsController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -23,7 +24,7 @@ import { isAdmin } from "./middlewares/isAdmin";
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
 import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
-import { createOrderSchema, listOrderSchema, addItemToOrderSchema, removeOrderItemSchema } from "./schemas/orderSchema";
+import { createOrderSchema, listOrderSchema, addItemToOrderSchema, removeOrderItemSchema, orderDetailsSchema } from "./schemas/orderSchema";
 
 const router = Router();
 
@@ -127,6 +128,14 @@ router.delete(
   isAuthenticated,
   validateSchema(removeOrderItemSchema),
   new RemoveOrderItemController().handle,
+);
+
+// get order details
+router.get(
+  "/order/details",
+  isAuthenticated,
+  validateSchema(orderDetailsSchema),
+  new OrderDetailsController().handle,
 );
 
 export { router };

@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { RemoveOrderItemService } from "../../services/order/RemoveOrderItemService";
+import { RemoveOrderItemService } from "../../services/order/RemoveItemService";
 
 
 class RemoveOrderItemController {
