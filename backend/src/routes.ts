@@ -18,14 +18,27 @@ import { AddItemToOrderController } from "./controllers/order/AddItemToOrderCont
 import { RemoveOrderItemController } from "./controllers/order/RemoveItemController";
 import { OrderDetailsController } from "./controllers/order/OrderDetailsController";
 import { SendOrderController } from "./controllers/order/SendOrderController";
+import { FinishOrderController } from "./controllers/order/FinishOrderController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
 import { isAdmin } from "./middlewares/isAdmin";
 import { createUserSchema, authUserSchema } from "./schemas/userSchema";
 import { createCategorySchema } from "./schemas/categorySchema";
-import { registerProductSchema, listProductSchema, deleteProductSchema, listProductByCategorySchema } from "./schemas/productSchema";
-import { createOrderSchema, listOrderSchema, addItemToOrderSchema, removeOrderItemSchema, singleOrderSchema, sendOderSchema } from "./schemas/orderSchema";
+import {
+  registerProductSchema,
+  listProductSchema,
+  deleteProductSchema,
+  listProductByCategorySchema,
+} from "./schemas/productSchema";
+import {
+  createOrderSchema,
+  listOrderSchema,
+  addItemToOrderSchema,
+  removeOrderItemSchema,
+  singleOrderSchema,
+  sendOderSchema,
+} from "./schemas/orderSchema";
 
 const router = Router();
 
@@ -145,6 +158,14 @@ router.patch(
   isAuthenticated,
   validateSchema(sendOderSchema),
   new SendOrderController().handle,
+);
+
+// finish an order
+router.patch(
+  "/order/finish",
+  isAuthenticated,
+  validateSchema(singleOrderSchema),
+  new FinishOrderController().handle,
 );
 
 export { router };

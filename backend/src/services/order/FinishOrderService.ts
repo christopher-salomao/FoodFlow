@@ -1,30 +1,29 @@
 import prismaClient from "../../prisma/index";
 
-interface SendOrderServiceProps {
+interface FinishOrderServiceProps {
   order_id: string;
-  customer_name?: string;
 }
 
-class SendOrderService {
-  async execute({ order_id, customer_name }: SendOrderServiceProps) {
+class FinishOrderService {
+  async execute({ order_id }: FinishOrderServiceProps) {
     try {
       const order = await prismaClient.order.findFirst({
         where: {
           id: order_id,
+          draft: false
         },
       });
 
-      if (!order) throw new Error("Pedido não encontrado");
+      if (!order) throw new Error("Pedido não encontrado ou está em rascunho");
 
-      if (order.draft === false) throw new Error("Pedido já enviado para produção ");
+      if (order.status === true) throw new Error("Pedido já finalizado");
 
       const updatedOrder = await prismaClient.order.update({
         where: {
           id: order_id,
         },
         data: {
-          draft: false,
-          customer_name: customer_name ?? "",
+          status: true,
         },
         select: {
           id: true,
@@ -36,11 +35,12 @@ class SendOrderService {
       });
 
       return updatedOrder;
+
     } catch (error) {
       console.error(error);
-      throw new Error("Falha ao enviar pedido");
+      throw new Error("Erro ao finalizar pedido");
     }
   }
 }
 
-export { SendOrderService };
+export { FinishOrderService };
