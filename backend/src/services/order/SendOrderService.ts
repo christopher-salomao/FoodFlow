@@ -15,7 +15,7 @@ class SendOrderService {
       });
 
       if (!order) throw new Error("Pedido não encontrado");
-
+      if (order.status === true) throw new Error("Pedido já finalizado");
       if (order.draft === false) throw new Error("Pedido já enviado para produção ");
 
       const updatedOrder = await prismaClient.order.update({

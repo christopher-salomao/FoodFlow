@@ -19,6 +19,7 @@ import { RemoveOrderItemController } from "./controllers/order/RemoveItemControl
 import { OrderDetailsController } from "./controllers/order/OrderDetailsController";
 import { SendOrderController } from "./controllers/order/SendOrderController";
 import { FinishOrderController } from "./controllers/order/FinishOrderController";
+import { DeleteOrderController } from "./controllers/order/DeleteOrderController";
 
 import { validateSchema } from "./middlewares/validateSchema";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
@@ -97,7 +98,7 @@ router.get(
 
 // disable a product
 router.delete(
-  "/products",
+  "/products/delete",
   isAuthenticated,
   isAdmin,
   validateSchema(deleteProductSchema),
@@ -166,6 +167,14 @@ router.patch(
   isAuthenticated,
   validateSchema(singleOrderSchema),
   new FinishOrderController().handle,
+);
+
+// delete an order
+router.delete(
+  "/order/delete",
+  isAuthenticated,
+  validateSchema(singleOrderSchema),
+  new DeleteOrderController().handle,
 );
 
 export { router };
