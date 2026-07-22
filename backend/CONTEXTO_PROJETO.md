@@ -8,10 +8,11 @@
 4. [Estrutura de Pastas](#estrutura-de-pastas)
 5. [Modelagem do Banco de Dados](#modelagem-do-banco-de-dados)
 6. [Middlewares](#middlewares)
-7. [Validação com Schemas](#validação-com-schemas)
-8. [Endpoints](#endpoints)
-9. [Fluxo de Requisição](#fluxo-de-requisição)
-10. [Configurações do Projeto](#configurações-do-projeto)
+7. [Upload de Arquivos](#upload-de-arquivos)
+8. [Validação com Schemas](#validação-com-schemas)
+9. [Endpoints](#endpoints)
+10. [Fluxo de Requisição](#fluxo-de-requisição)
+11. [Configurações do Projeto](#configurações-do-projeto)
 
 ---
 
@@ -50,31 +51,32 @@ Requisição HTTP → Rotas → Middlewares → Controller → Service → Banco
 
 ### Dependências de Produção
 
-| Tecnologia         | Versão  | Finalidade                                   |
-| ------------------ | ------- | -------------------------------------------- |
-| **express**        | ^5.2.1  | Framework web para criação de APIs REST      |
-| **@prisma/client** | ^7.6.0  | ORM para comunicação com banco de dados      |
-| **typescript**     | ^5.9.3  | Superset JavaScript com tipagem estática     |
-| **zod**            | ^4.3.6  | Biblioteca de validação de schemas e tipagem |
-| **bcryptjs**       | ^3.0.3  | Criptografia de senhas                       |
-| **jsonwebtoken**   | ^9.0.3  | Geração e validação de tokens JWT            |
-| **cors**           | ^2.8.6  | Middleware para habilitar CORS               |
-| **dotenv**         | ^17.4.0 | Carregamento de variáveis de ambiente        |
-| **tsx**            | ^4.21.0 | Executor TypeScript para desenvolvimento     |
-| **multer**         | ^2.2.0  | Middleware para upload de arquivos           |
-| **cloudinary**     | ^2.10.0 | Upload de imagens para o Cloudinary          |
+| Tecnologia         | Versão  | Finalidade                                          |
+| ------------------ | ------- | --------------------------------------------------- |
+| **express**        | ^5.2.1  | Framework web para criação de APIs REST             |
+| **@prisma/client** | ^6.19.3 | ORM para comunicação com banco de dados             |
+| **typescript**     | ^5.9.3  | Superset JavaScript com tipagem estática            |
+| **zod**            | ^4.3.6  | Biblioteca de validação de schemas e tipagem        |
+| **bcryptjs**       | ^3.0.3  | Criptografia de senhas                              |
+| **jsonwebtoken**   | ^9.0.3  | Geração e validação de tokens JWT                   |
+| **cors**           | ^2.8.6  | Middleware para habilitar CORS                      |
+| **dotenv**         | ^17.4.0 | Carregamento de variáveis de ambiente               |
+| **tsx**            | ^4.21.0 | Executor TypeScript para desenvolvimento            |
+| **multer**         | ^2.2.0  | Middleware para upload de arquivos                  |
+| **cloudinary**     | ^2.10.0 | Serviço de armazenamento e gerenciamento de imagens |
+| **pg**             | ^8.20.0 | Driver PostgreSQL                                   |
 
 ### Dependências de Desenvolvimento
 
-| Tecnologia              | Versão   | Finalidade                         |
-| ----------------------- | -------- | ---------------------------------- |
-| **@types/express**      | ^5.0.6   | Tipos TypeScript para Express      |
-| **@types/cors**         | ^2.8.19  | Tipos TypeScript para CORS         |
-| **@types/jsonwebtoken** | ^9.0.10  | Tipos TypeScript para JWT          |
-| **@types/node**         | ^25.5.2  | Tipos TypeScript para Node.js      |
-| **@types/multer**       | ^2.2.0   | Tipos TypeScript para Multer       |
-| **prisma**              | ^6.19.3  | CLI do Prisma ORM                  |
-
+| Tecnologia              | Versão   | Finalidade                    |
+| ----------------------- | -------- | ----------------------------- |
+| **@types/express**      | ^5.0.6   | Tipos TypeScript para Express |
+| **@types/cors**         | ^2.8.19  | Tipos TypeScript para CORS    |
+| **@types/jsonwebtoken** | ^9.0.10  | Tipos TypeScript para JWT     |
+| **@types/multer**       | ^2.2.0   | Tipos TypeScript para Multer  |
+| **@types/node**         | ^25.5.2  | Tipos TypeScript para Node.js |
+| **@types/pg**           | ^8.20.0  | Tipos TypeScript para pg      |
+| **prisma**              | ^6.19.3  | CLI do Prisma ORM             |
 
 ### Banco de Dados
 
@@ -96,20 +98,32 @@ backend/
 │   ├── @types/               # Definições de tipos TypeScript customizados
 │   │   └── express/
 │   │       └── index.d.ts    # Extensão de tipos do Express
-│   ├── controllers/          # Controllers (recebem requisições)
+│   ├── config/               # Configurações da aplicação
+│   │   ├── cloudinary.ts     # Configuração do Cloudinary
+│   │   └── multer.ts         # Configuração do Multer (upload)
+│   ├── controllers/
 │   │   ├── category/
 │   │   │   ├── CreateCategoryController.ts
 │   │   │   └── ListCategoriesController.ts
+│   │   ├── order/
+│   │   │   ├── AddItemToOrderController.ts
+│   │   │   ├── CreateOrderController.ts
+│   │   │   ├── DeleteOrderController.ts
+│   │   │   ├── FinishOrderController.ts
+│   │   │   ├── ListOrdersController.ts      # classe: ListOrderController
+│   │   │   ├── OrderDetailsController.ts
+│   │   │   ├── RemoveItemController.ts      # classe: RemoveOrderItemController
+│   │   │   └── SendOrderController.ts
 │   │   ├── product/
+│   │   │   ├── DeleteProductController.ts
+│   │   │   ├── ListProductByCategoryController.ts
+│   │   │   ├── ListProductsController.ts
 │   │   │   └── RegisterProductsController.ts
 │   │   └── user/
 │   │       ├── AuthUserController.ts
-│   │       ├── CreateUserController.ts
+│   │       ├── createUserController.ts      # classe: CreateUserController
 │   │       └── UserDetailsController.ts
-│   ├── config/               # Configurações auxiliares
-│   │   ├── cloudinary.ts
-│   │   └── multer.ts
-│   ├── generated/            # Código gerado pelo Prisma
+│   ├── generated/
 │   │   └── prisma/
 │   │       ├── client.ts
 │   │       ├── enums.ts
@@ -125,19 +139,33 @@ backend/
 │   │   ├── orderSchema.ts
 │   │   ├── productSchema.ts
 │   │   └── userSchema.ts
-│   ├── services/             # Services (lógica de negócio)
+│   ├── services/
 │   │   ├── category/
 │   │   │   ├── CreateCategoryService.ts
 │   │   │   └── ListCategoriesService.ts
+│   │   ├── order/
+│   │   │   ├── AddItemToOrderService.ts
+│   │   │   ├── CreateOrderService.ts
+│   │   │   ├── DeleteOrderService.ts
+│   │   │   ├── FinishOrderService.ts
+│   │   │   ├── ListOrdersService.ts         # classe: ListOrderService
+│   │   │   ├── OrderDetailsService.ts
+│   │   │   ├── RemoveItemService.ts         # classe: RemoveOrderItemService
+│   │   │   └── SendOrderService.ts
 │   │   ├── products/
+│   │   │   ├── DeleteProductService.ts
+│   │   │   ├── ListProductByCategoryService.ts
+│   │   │   ├── ListProductsService.ts
 │   │   │   └── RegisterProductsService.ts
 │   │   └── user/
 │   │       ├── AuthUserService.ts
-│   │       ├── CreateUserService.ts
-│   │       └── UserDetailsSerivice.ts
+│   │       ├── createUserService.ts         # classe: CreateUserService
+│   │       └── UserDetailsSerivice.ts       # classe: UserDetailsService (typo no arquivo)
 │   ├── routes.ts             # Definição de todas as rotas
 │   └── server.ts             # Configuração e inicialização do servidor
 ├── .env                      # Variáveis de ambiente
+├── CONTEXTO_PROJETO.md       # Documentação completa do contexto do projeto
+├── endpoints.md              # Documentação detalhada de todos os endpoints
 ├── package.json              # Dependências e scripts
 ├── prisma.config.ts          # Configurações adicionais do Prisma
 └── tsconfig.json             # Configurações do TypeScript
@@ -146,9 +174,14 @@ backend/
 
 ### Convenções de Nomenclatura:
 
-- **Controllers**: `<Action><Entity>Controller.ts` (ex: `CreateUserController.ts`, `ListCategoriesController.ts`)
-- **Services**: `<Action><Entity>Service.ts` (ex: `CreateUserService.ts`, `ListCategoriesService.ts`)
-- **Exceção**: detalhes do usuário autenticado usam `UserDetailsController.ts` e `UserDetailsSerivice.ts` (classe `UserDetailsService`)
+- **Controllers**: `<Action><Entity>Controller.ts` (ex: `ListCategoriesController.ts`)
+- **Services**: `<Action><Entity>Service.ts` (ex: `RegisterProductsService.ts`)
+- **Exceções de nomenclatura no repositório**:
+  - `createUserController.ts` / `createUserService.ts` (classes em PascalCase)
+  - `UserDetailsSerivice.ts` (typo no nome do arquivo; classe `UserDetailsService`)
+  - `RemoveItemController.ts` / `RemoveItemService.ts` (classes `RemoveOrderItemController` / `RemoveOrderItemService`)
+  - `ListOrdersController.ts` / `ListOrdersService.ts` (classes `ListOrderController` / `ListOrderService`)
+- **Pasta de produtos**: `services/products/` (plural)
 - **Schemas**: `<entity>Schema.ts` (ex: `userSchema.ts`)
 - **Middlewares**: `<description>.ts` (ex: `isAuthenticated.ts`)
 
@@ -211,11 +244,11 @@ Order (1) ───────────────────────�
   name: string               // Nome do produto
   price: number (int)        // Preço em centavos
   description: string        // Descrição do produto
-  bunner: string             // URL da imagem
-  disable: boolean           // Produto ativo/inativo (default: false)
-  category_id: string        // FK para Category
-  category: Category         // Relação com categoria
-  orderItems: OrderItem[]    // Itens de pedidos deste produto
+  banner: string              // URL da imagem (Cloudinary)
+  disabled: boolean            // Produto ativo/inativo (default: false)
+  category_id: string          // FK para Category
+  category: Category           // Relação com categoria
+  orderItems: OrderItem[]      // Itens de pedidos deste produto
   createdAt: DateTime        // Data de criação
   updatedAt: DateTime        // Data de atualização
 }
@@ -229,10 +262,10 @@ Order (1) ───────────────────────�
 {
   id: string (UUID)          // Identificador único
   table: number (int)        // Número da mesa
-  status: boolean            // false = pendente, true = pronto
-  draft: boolean             // true = rascunho, false = confirmado
-  customer_name: string?     // Nome opcional do cliente
-  order_items: OrderItem[]   // Itens do pedido
+  status: boolean              // false = pendente, true = pronto
+  draft: boolean               // true = rascunho, false = confirmado
+  customer_name: string?       // Nome opcional do cliente
+  order_items: OrderItem[]     // Itens do pedido
   createdAt: DateTime        // Data de criação
   updatedAt: DateTime        // Data de atualização
 }
@@ -348,19 +381,90 @@ router.post(
 
 ```json
 {
-  "error": "Validation error",
+  "error": "Erro validação",
   "details": [
-    {
-      "field": "name",
-      "message": "O nome deve ter pelo menos 3 caracteres"
-    },
-    {
-      "field": "email",
-      "message": "Precisa ser um email válido"
-    }
+    { "message": "O nome precisa ter no minimo 3 letras" },
+    { "message": "Precisa ser um email valido" }
   ]
 }
 ```
+
+---
+
+## 📤 Upload de Arquivos
+
+### Configuração do Multer (`config/multer.ts`)
+
+**Função**: Middleware para processar upload de arquivos (imagens de produtos).
+
+**Configurações**:
+
+- **Storage**: `memoryStorage()` - Mantém o arquivo em memória (buffer) ao invés de salvar no disco
+- **Limite de tamanho**: 4MB por arquivo
+- **Formatos aceitos**: JPEG, JPG, PNG
+
+**Validação de Tipo**:
+
+```typescript
+const allowedMimes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+```
+
+**Fluxo**:
+
+1. Recebe o arquivo via `multipart/form-data`
+2. Valida o tipo MIME do arquivo
+3. Verifica o tamanho (máx 4MB)
+4. Armazena o arquivo em memória como Buffer
+5. Disponibiliza via `req.file.buffer`
+
+**Uso nas Rotas**:
+
+```typescript
+router.post(
+  "/products",
+  isAuthenticated,
+  isAdmin,
+  upload.single("banner"),
+  validateSchema(registerProductSchema),
+  new RegisterProductsController().handle
+);
+```
+
+**Erros**:
+
+- Formato inválido: "Formato de arquivo invalido, use apenas JPG, JPEG, PNG."
+- Tamanho excedido: Retorna erro automaticamente se > 4MB
+
+---
+
+### Configuração do Cloudinary (`config/cloudinary.ts`)
+
+**Função**: Serviço de armazenamento e CDN para imagens de produtos.
+
+**Integração**:
+
+- Recebe o buffer do arquivo do Multer
+- Faz upload usando streaming (sem salvar no disco)
+- Retorna URL pública da imagem hospedada
+
+**Configuração de Upload**:
+
+- **Pasta**: `products/` - Organiza imagens na pasta products do Cloudinary
+- **Resource Type**: `image`
+- **Public ID**: `{timestamp}-{nome-original}` - Nome único para evitar conflitos
+
+**Fluxo no CreateProductService**:
+
+1. Cria stream do buffer recebido
+2. Faz pipe para o Cloudinary uploader
+3. Aguarda resposta com `secure_url`
+4. Salva a URL no campo `banner` do produto
+
+**Observações**:
+
+- Imagens ficam hospedadas permanentemente no Cloudinary
+- URLs são otimizadas e servidas via CDN
+- Suporta transformações de imagem (redimensionamento, corte, etc.)
 
 ---
 
@@ -386,9 +490,9 @@ Valida criação de novos usuários:
 
 **Mensagens de erro customizadas**:
 
-- Nome inválido: "O nome deve ter pelo menos 3 caracteres"
-- Email inválido: "Precisa ser um email válido"
-- Senha inválida: "A senha precisa ter pelo menos 6 caracteres"
+- Nome inválido: "O nome precisa ter no minimo 3 letras"
+- Email inválido: "Precisa ser um email valido"
+- Senha inválida: "A senha deve ter no minimo 6 caracteres"
 
 #### **authUserSchema**
 
@@ -412,33 +516,88 @@ Valida criação de categorias:
 ```typescript
 {
   body: {
-    name: string (min: 3 caracteres)
+    name: string (min: 2 caracteres)
   }
 }
 ```
 
 **Mensagens de erro**:
 
-- Nome inválido: "O nome da categoria precisa ter pelo menos 3 caracteres"
+- Nome inválido: "Nome da categoria precisa ter 2 caracteres"
+
+---
 
 ### Product Schemas (`schemas/productSchema.ts`)
 
-#### **registerProductSchema**
+#### **createProductSchema**
 
-Valida o cadastro de produtos:
+Valida criação de produtos:
 
 ```typescript
 {
   body: {
-    name: string (obrigatório),
-    description: string (obrigatório),
-    price: string numérica (mínimo 3 caracteres),
-    category_id: string (obrigatório)
+    name: string (min: 1 caractere),
+    price: string (obrigatório, valor em centavos),
+    description: string (min: 1 caractere),
+    category_id: string (UUID da categoria)
   }
 }
 ```
 
-**Observação**: a imagem do produto é enviada via multipart/form-data no campo `bunner` e validada no controller, antes da criação do produto.
+**Mensagens de erro**:
+
+- Nome inválido: "O nome do produto é obrigatório"
+- Preço inválido: "O valor do produto é obrigatório"
+- Descrição inválida: "A descrição do produto é obrigatória"
+- Categoria inválida: "A Categoria do produto é obrigatória"
+
+**Observações**:
+
+- O campo `price` é enviado como string e convertido para inteiro no controller
+- Além dos campos do schema, a rota exige um arquivo de imagem via `multipart/form-data`
+
+---
+
+#### **listProductSchema**
+
+Valida listagem de produtos com filtro:
+
+```typescript
+{
+  query: {
+    disabled: string(opcional);
+  }
+}
+```
+
+**Observações**:
+
+- O query param `disabled` é opcional
+- Aceita qualquer string, a conversão é feita no service
+
+---
+
+#### **listProductByCategorySchema**
+
+Valida listagem de produtos por categoria:
+
+```typescript
+{
+  query: {
+    category_id: string(obrigatório);
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- ID inválido: "O ID da categoria é obrigatório"
+
+**Observações**:
+
+- Retorna apenas produtos ativos (`disabled: false`) da categoria especificada
+
+---
 
 ### Order Schemas (`schemas/orderSchema.ts`)
 
@@ -449,15 +608,178 @@ Valida criação de pedidos:
 ```typescript
 {
   body: {
-    table: number inteiro,
-    products: string[] (IDs dos produtos)
+    table: number (inteiro positivo),
+    name: string (opcional)
   }
 }
 ```
 
+**Mensagens de erro**:
+
+- Mesa inválida: "O número da mesa é obrigatório"
+- Tipo inválido: "O número da mesa deve ser um número inteiro"
+- Número inválido: "O número da mesa deve ser um número positivo"
+
+---
+
+#### **addItemSchema**
+
+Valida adição de item ao pedido:
+
+```typescript
+{
+  body: {
+    order_id: string (min: 1 caractere),
+    product_id: string (min: 1 caractere),
+    amount: number (inteiro positivo)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- Order inválida: "A order_id deve ser obrigatória"
+- Produto inválido: "O id do produto deve ser obrigatório"
+- Quantidade inválida: "Quantidade deve ser um numero positivo"
+
+---
+
+#### **removeItemSchema**
+
+Valida remoção de item:
+
+```typescript
+{
+  query: {
+    item_id: string (min: 1 caractere)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- Item inválido: "O item_id é obrigatório"
+
+---
+
+#### **detailOrderSchema**
+
+Valida busca de detalhes do pedido:
+
+```typescript
+{
+  query: {
+    order_id: string (min: 1 caractere)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- Order inválida: "O order_id é obrigatório"
+
+---
+
+#### **sendOrderSchema**
+
+Valida envio/confirmação de pedido:
+
+```typescript
+{
+  body: {
+    order_id: string,
+    name: string
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- ID inválido: "ID do pedido precisa ser uma string"
+- Nome inválido: "O nome precisa ser um texto"
+
+---
+
+#### **finishOrderSchema**
+
+Valida finalização de pedido:
+
+```typescript
+{
+  body: {
+    order_id: string;
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- ID inválido: "ID do pedido precisa ser uma string"
+
+---
+
+#### **deleteOrderSchema**
+
+Valida deleção de pedido:
+
+```typescript
+{
+  query: {
+    order_id: string;
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- ID inválido: "ID do pedido precisa ser uma string"
+
 ---
 
 ## 🌐 Endpoints
+
+> **📚 Documentação Detalhada**: Para informações completas sobre cada endpoint, incluindo exemplos de requisição/resposta, validações e códigos de erro, consulte o arquivo [`endpoints.md`](./endpoints.md).
+
+### 📋 Resumo de Rotas
+
+#### **Usuários**
+
+| Método | Rota     | Autenticação | Permissão   | Descrição                     |
+| ------ | -------- | ------------ | ----------- | ----------------------------- |
+| POST   | /users   | ❌           | Pública     | Criar novo usuário            |
+| POST   | /session | ❌           | Pública     | Autenticar usuário (login)    |
+| GET    | /me      | ✅           | STAFF/ADMIN | Obter dados do usuário logado |
+
+#### **Categorias**
+
+| Método | Rota      | Autenticação | Permissão   | Descrição                  |
+| ------ | --------- | ------------ | ----------- | -------------------------- |
+| POST   | /category | ✅           | ADMIN       | Criar nova categoria       |
+| GET    | /category | ✅           | STAFF/ADMIN | Listar todas as categorias |
+
+#### **Produtos**
+
+| Método | Rota              | Autenticação | Permissão   | Descrição                           |
+| ------ | ----------------- | ------------ | ----------- | ----------------------------------- |
+| POST   | /product          | ✅           | ADMIN       | Criar novo produto (com imagem)     |
+| GET    | /products         | ✅           | STAFF/ADMIN | Listar produtos (filtro por status) |
+| DELETE | /product          | ✅           | ADMIN       | Desativar produto (soft delete)     |
+| GET    | /category/product | ✅           | STAFF/ADMIN | Listar produtos de uma categoria    |
+
+#### **Pedidos (Orders)**
+
+| Método | Rota          | Autenticação | Permissão   | Descrição                         |
+| ------ | ------------- | ------------ | ----------- | --------------------------------- |
+| POST   | /order        | ✅           | STAFF/ADMIN | Criar novo pedido                 |
+| POST   | /order/add    | ✅           | STAFF/ADMIN | Adicionar item ao pedido          |
+| DELETE | /order/remove | ✅           | STAFF/ADMIN | Remover item do pedido            |
+| PUT    | /order/send   | ✅           | STAFF/ADMIN | Enviar pedido (confirmar)         |
+| PUT    | /order/finish | ✅           | STAFF/ADMIN | Finalizar pedido                  |
+| GET    | /orders       | ✅           | STAFF/ADMIN | Listar pedidos (filtro por draft) |
+| GET    | /order/detail | ✅           | STAFF/ADMIN | Detalhes de um pedido específico  |
+| DELETE | /order        | ✅           | STAFF/ADMIN | Deletar pedido                    |
+
+---
 
 ### **Usuários**
 
@@ -497,7 +819,7 @@ Cria um novo usuário no sistema.
 
 ---
 
-#### **POST /login**
+#### **POST /session**
 
 Autentica um usuário e retorna token JWT.
 
@@ -519,14 +841,13 @@ Autentica um usuário e retorna token JWT.
   "id": "uuid-do-usuario",
   "name": "João Silva",
   "email": "joao@example.com",
-  "role": "STAFF",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
 **Observações**:
 
-- Token JWT com expiração de 30 dias
+- Token JWT com expiração configurada em variável de ambiente
 - Token contém o `user_id` no campo `sub`
 
 ---
@@ -550,8 +871,7 @@ Authorization: Bearer <token>
   "id": "uuid-do-usuario",
   "name": "João Silva",
   "email": "joao@example.com",
-  "role": "STAFF",
-  "createdAt": "2025-11-11T10:30:00.000Z"
+  "role": "STAFF"
 }
 ```
 
@@ -559,35 +879,7 @@ Authorization: Bearer <token>
 
 ### **Categorias**
 
-#### **GET /categories**
-
-Lista todas as categorias cadastradas.
-
-**Middlewares**: `isAuthenticated`
-
-**Permissão**: Usuários autenticados (`STAFF` ou `ADMIN`)
-
-**Headers**:
-
-```
-Authorization: Bearer <token>
-```
-
-**Resposta de Sucesso (200)**:
-
-```json
-[
-  {
-    "id": "uuid-da-categoria",
-    "name": "Pizzas Doces",
-    "createdAt": "2025-11-11T10:30:00.000Z"
-  }
-]
-```
-
----
-
-#### **POST /categories**
+#### **POST /category**
 
 Cria uma nova categoria de produtos.
 
@@ -621,15 +913,13 @@ Authorization: Bearer <token>
 
 ---
 
-### **Produtos**
+#### **GET /category**
 
-#### **POST /products**
+Lista todas as categorias cadastradas.
 
-Cadastra um novo produto no sistema, incluindo upload de imagem para o Cloudinary.
+**Middlewares**: `isAuthenticated`
 
-**Middlewares**: `isAuthenticated`, `isAdmin`, `upload.single("bunner")`, `validateSchema(registerProductSchema)`
-
-**Permissão**: Apenas usuários com role ADMIN
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
 
 **Headers**:
 
@@ -637,14 +927,49 @@ Cadastra um novo produto no sistema, incluindo upload de imagem para o Cloudinar
 Authorization: Bearer <token>
 ```
 
-**Body** (multipart/form-data):
+**Resposta de Sucesso (200)**:
 
-```text
-name: "Pizza Pepperoni"
-description: "Pizza saborosa com pepperoni"
-price: "3500"
+```json
+[
+  {
+    "id": "uuid-categoria-1",
+    "name": "Pizzas Salgadas",
+    "createdAt": "2025-11-11T10:30:00.000Z"
+  },
+  {
+    "id": "uuid-categoria-2",
+    "name": "Pizzas Doces",
+    "createdAt": "2025-11-11T10:35:00.000Z"
+  }
+]
+```
+
+**Observações**:
+
+- As categorias são retornadas ordenadas por data de criação (mais recentes primeiro)
+- Retorna apenas os campos: `id`, `name` e `createdAt`
+
+---
+
+### **Produtos**
+
+#### **POST /product**
+
+Cria um novo produto com upload de imagem.
+
+**Controller**: `CreateProductController`
+**Service**: `CreateProductService`
+**Middlewares**: `isAuthenticated`, `isAdmin`, `upload.single("file")`, `validateSchema(createProductSchema)`
+**Permissão**: Apenas ADMIN
+
+**Body (FormData)**:
+
+```
+name: "Pizza Margherita"
+price: "3500"  (valor em centavos - R$ 35,00)
+description: "Molho de tomate, mussarela e manjericão"
 category_id: "uuid-da-categoria"
-bunner: <arquivo de imagem>
+file: [arquivo de imagem]
 ```
 
 **Resposta de Sucesso (200)**:
@@ -652,20 +977,462 @@ bunner: <arquivo de imagem>
 ```json
 {
   "id": "uuid-gerado",
-  "name": "Pizza Pepperoni",
-  "description": "Pizza saborosa com pepperoni",
+  "name": "Pizza Margherita",
   "price": 3500,
+  "description": "Molho de tomate, mussarela e manjericão",
   "category_id": "uuid-da-categoria",
-  "bunner": "https://res.cloudinary.com/....jpg",
-  "createdAt": "2025-11-11T10:30:00.000Z"
+  "banner": "https://res.cloudinary.com/.../products/123456-image.jpg",
+  "disabled": false,
+  "createdAt": "2025-11-12T10:30:00.000Z"
 }
 ```
 
 **Observações**:
 
-- A imagem é enviada para o Cloudinary e o link retornado é salvo no campo `bunner`
-- O campo `price` é recebido como string e convertido para inteiro em centavos
-- O produto só é criado se a categoria informada existir
+- Formatos de imagem aceitos: JPEG, JPG, PNG (máx 4MB)
+- Imagem é enviada para o Cloudinary
+- Valida se a categoria existe
+- Produto é criado como ativo (`disabled: false`)
+
+---
+
+#### **GET /products**
+
+Lista produtos com filtro de status.
+
+**Controller**: `ListProductController`
+**Service**: `ListProductService`
+**Middlewares**: `isAuthenticated`, `validateSchema(listProductSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+disabled: "true" | "false" (opcional, padrão: "false")
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+[
+  {
+    "id": "uuid-produto-1",
+    "name": "Pizza Margherita",
+    "price": 3500,
+    "description": "Molho de tomate, mussarela e manjericão",
+    "banner": "https://res.cloudinary.com/.../products/123-image.jpg",
+    "disabled": false,
+    "category_id": "uuid-da-categoria",
+    "createdAt": "2025-11-12T10:30:00.000Z",
+    "category": {
+      "id": "uuid-da-categoria",
+      "name": "Pizzas Salgadas"
+    }
+  }
+]
+```
+
+**Observações**:
+
+- Produtos ordenados por data de criação (mais recentes primeiro)
+- Inclui dados da categoria relacionada
+
+---
+
+#### **DELETE /product**
+
+Desativa um produto (soft delete).
+
+**Controller**: `DeleteProductController`
+**Service**: `DeleteProductService`
+**Middlewares**: `isAuthenticated`, `isAdmin`
+**Permissão**: Apenas ADMIN
+
+**Query Parameters**:
+
+```
+product_id: "uuid-do-produto"
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "message": "Produto deletado/arquivado com sucesso!"
+}
+```
+
+**Observações**:
+
+- Produto não é deletado, apenas `disabled` é alterado para `true`
+- Mantém integridade referencial e histórico
+
+---
+
+#### **GET /category/product**
+
+Lista produtos de uma categoria específica (apenas ativos).
+
+**Controller**: `ListProductByCategoryController`
+**Service**: `ListProductByCategoryService`
+**Middlewares**: `isAuthenticated`, `validateSchema(listProductByCategorySchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+category_id: "uuid-da-categoria"
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+[
+  {
+    "id": "uuid-produto-1",
+    "name": "Pizza Margherita",
+    "price": 3500,
+    "description": "Molho de tomate, mussarela e manjericão",
+    "banner": "https://res.cloudinary.com/.../products/margherita.jpg",
+    "disabled": false,
+    "category_id": "uuid-da-categoria",
+    "createdAt": "2025-11-12T10:30:00.000Z",
+    "category": {
+      "id": "uuid-da-categoria",
+      "name": "Pizzas Salgadas"
+    }
+  }
+]
+```
+
+**Observações**:
+
+- Retorna apenas produtos ativos (`disabled: false`)
+- Valida se a categoria existe
+
+---
+
+### **Pedidos (Orders)**
+
+#### **POST /order**
+
+Cria um novo pedido (inicialmente como rascunho).
+
+**Controller**: `CreateOrderController`
+**Service**: `CreateOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(createOrderSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Body**:
+
+```json
+{
+  "table": 5,
+  "name": "Mesa do João"
+}
+```
+
+**Resposta de Sucesso (201)**:
+
+```json
+{
+  "id": "uuid-gerado",
+  "table": 5,
+  "status": false,
+  "draft": true,
+  "name": "Mesa do João",
+  "createdAt": "2025-11-12T10:30:00.000Z"
+}
+```
+
+**Observações**:
+
+- Pedido criado como rascunho (`draft: true`)
+- Status inicial `false` (não finalizado)
+- Campo `name` é opcional
+
+---
+
+#### **POST /order/add**
+
+Adiciona um produto a um pedido existente.
+
+**Controller**: `AddItemController`
+**Service**: `AddItemOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(addItemSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Body**:
+
+```json
+{
+  "order_id": "uuid-do-pedido",
+  "product_id": "uuid-do-produto",
+  "amount": 2
+}
+```
+
+**Resposta de Sucesso (201)**:
+
+```json
+{
+  "id": "uuid-item-gerado",
+  "amount": 2,
+  "order_id": "uuid-do-pedido",
+  "product_id": "uuid-do-produto",
+  "createdAt": "2025-11-12T10:35:00.000Z",
+  "product": {
+    "id": "uuid-do-produto",
+    "name": "Pizza Margherita",
+    "price": 3500,
+    "description": "Molho de tomate, mussarela e manjericão",
+    "banner": "https://res.cloudinary.com/.../products/margherita.jpg"
+  }
+}
+```
+
+**Observações**:
+
+- Valida se o pedido existe
+- Valida se o produto existe e está ativo
+- Retorna dados do item com informações do produto
+
+---
+
+#### **DELETE /order/remove**
+
+Remove um item específico de um pedido.
+
+**Controller**: `RemoveItemController`
+**Service**: `RemoveItemOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(removeItemSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+item_id: "uuid-do-item"
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "message": "Item removido com sucesso"
+}
+```
+
+**Observações**:
+
+- Deleta permanentemente o item do banco
+- Não afeta o pedido principal
+
+---
+
+#### **PUT /order/send**
+
+Envia o pedido para a cozinha (sai do modo rascunho).
+
+**Controller**: `SendOrderController`
+**Service**: `SendOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(sendOrderSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Body**:
+
+```json
+{
+  "order_id": "uuid-do-pedido",
+  "name": "Mesa 5 - João"
+}
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "id": "uuid-do-pedido",
+  "table": 5,
+  "name": "Mesa 5 - João",
+  "draft": false,
+  "status": false,
+  "createdAt": "2025-11-12T10:30:00.000Z"
+}
+```
+
+**Observações**:
+
+- Altera `draft` de `true` para `false`
+- Atualiza o campo `name` do pedido
+- Pedido passa a ser visível na cozinha
+
+---
+
+#### **PUT /order/finish**
+
+Marca um pedido como finalizado.
+
+**Controller**: `FinishOrderController`
+**Service**: `FinishOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(finishOrderSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Body**:
+
+```json
+{
+  "order_id": "uuid-do-pedido"
+}
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "id": "uuid-do-pedido",
+  "table": 5,
+  "name": "Mesa 5 - João",
+  "draft": false,
+  "status": true,
+  "createdAt": "2025-11-12T10:30:00.000Z"
+}
+```
+
+**Observações**:
+
+- Altera `status` de `false` para `true`
+- Indica que o pedido foi entregue/finalizado
+
+---
+
+#### **GET /orders**
+
+Lista pedidos com filtro de rascunho.
+
+**Controller**: `ListOrdersController`
+**Service**: `ListOrderService`
+**Middlewares**: `isAuthenticated`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+draft: "true" | "false" (opcional, padrão: "false")
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+[
+  {
+    "id": "uuid-pedido-1",
+    "table": 5,
+    "name": "Mesa 5 - João",
+    "draft": false,
+    "status": false,
+    "createdAt": "2025-11-12T10:30:00.000Z",
+    "items": [
+      {
+        "id": "uuid-item-1",
+        "amount": 2,
+        "product": {
+          "id": "uuid-produto-1",
+          "name": "Pizza Margherita",
+          "price": 3500,
+          "description": "Molho de tomate, mussarela e manjericão",
+          "banner": "https://res.cloudinary.com/.../products/margherita.jpg"
+        }
+      }
+    ]
+  }
+]
+```
+
+**Observações**:
+
+- Inclui todos os itens de cada pedido com detalhes dos produtos
+- Útil para visualizar pedidos na cozinha ou rascunhos
+
+---
+
+#### **GET /order/detail**
+
+Busca informações completas de um pedido específico.
+
+**Controller**: `DetailOrderController`
+**Service**: `DetailOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(detailOrderSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+order_id: "uuid-do-pedido"
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "id": "uuid-do-pedido",
+  "table": 5,
+  "name": "Mesa 5 - João",
+  "draft": false,
+  "status": false,
+  "createdAt": "2025-11-12T10:30:00.000Z",
+  "updatedAt": "2025-11-12T10:35:00.000Z",
+  "items": [
+    {
+      "id": "uuid-item-1",
+      "amount": 2,
+      "createdAt": "2025-11-12T10:35:00.000Z",
+      "product": {
+        "id": "uuid-produto-1",
+        "name": "Pizza Margherita",
+        "price": 3500,
+        "description": "Molho de tomate, mussarela e manjericão",
+        "banner": "https://res.cloudinary.com/.../products/margherita.jpg"
+      }
+    }
+  ]
+}
+```
+
+**Observações**:
+
+- Retorna informações completas incluindo timestamps
+- Inclui todos os itens com detalhes dos produtos
+
+---
+
+#### **DELETE /order**
+
+Deleta permanentemente um pedido e todos seus itens.
+
+**Controller**: `DeleteOrderController`
+**Service**: `DeleteOrderService`
+**Middlewares**: `isAuthenticated`, `validateSchema(deleteOrderSchema)`
+**Permissão**: STAFF ou ADMIN
+
+**Query Parameters**:
+
+```
+order_id: "uuid-do-pedido"
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "message": "Pedido deletado com sucesso!"
+}
+```
+
+**Observações**:
+
+- Deleta permanentemente o pedido
+- Todos os itens são deletados automaticamente (cascade)
+- Operação não pode ser revertida
 
 ---
 
@@ -687,7 +1454,7 @@ bunner: <arquivo de imagem>
    ↓
 4. CreateUserService.execute()
    - Verifica se email já existe
-   - Se existe → throw Error("Usuário já cadastrado")
+   - Se existe → throw Error("Usuário já existente!")
    - Criptografa senha com bcrypt
    - Cria usuário no banco via Prisma
    - Retorna dados do usuário (sem senha)
@@ -702,7 +1469,7 @@ bunner: <arquivo de imagem>
 ### Fluxo com Autenticação e Autorização
 
 ```
-1. POST /categories
+1. POST /category
    ↓
 2. Middleware: isAuthenticated
    - Valida token JWT
@@ -725,49 +1492,87 @@ bunner: <arquivo de imagem>
 6. Resposta HTTP 201
 ```
 
-### Fluxo: Listagem de Categorias
+---
+
+### Fluxo com Upload de Arquivo (Produto)
 
 ```
-1. GET /categories
-   ↓
-2. Middleware: isAuthenticated
-   - Valida token JWT
-   - Adiciona user_id ao req
-   - Se inválido → 401
-   ↓
-3. ListCategoriesController → ListCategoriesService
-   - Busca categorias no banco via Prisma
-   - Ordena por nome (asc)
-   ↓
-4. Resposta HTTP 200 com array de categorias
-```
-
-### Fluxo: Cadastro de Produto
-
-```
-1. POST /products
+1. POST /product (multipart/form-data)
    ↓
 2. Middleware: isAuthenticated
    - Valida token JWT
    - Se inválido → 401
    ↓
 3. Middleware: isAdmin
-   - Verifica se o usuário é ADMIN
-   - Se não for → 401
+   - Verifica role === "ADMIN"
+   - Se não for admin → 401
    ↓
-4. Middleware: upload.single("bunner")
-   - Recebe o arquivo de imagem do formulário
+4. Middleware: upload.single("file")
+   - Processa upload do arquivo
+   - Valida formato (JPEG, JPG, PNG)
+   - Valida tamanho (máx 4MB)
+   - Armazena em memória (buffer)
+   - Adiciona arquivo em req.file
+   - Se inválido → 400
    ↓
-5. Middleware: validateSchema(registerProductSchema)
-   - Valida name, description, price e category_id
+5. Middleware: validateSchema(createProductSchema)
+   - Valida name, price, description, category_id
+   - Se inválido → 400
    ↓
-6. RegisterProductsController → RegisterProductsService
-   - Valida se a categoria existe
-   - Verifica se o produto já está cadastrado
-   - Faz upload da imagem para o Cloudinary
-   - Cria o produto no banco
+6. CreateProductController.handle()
+   - Extrai dados do req.body
+   - Verifica se req.file existe
+   - Se não existe → throw Error("A imagem do produto é obrigatória")
+   - Instancia CreateProductService
    ↓
-7. Resposta HTTP 200 com os dados do produto criado
+7. CreateProductService.execute()
+   - Verifica se categoria existe
+   - Se não existe → throw Error("Categoria não encontrada!")
+   - Cria stream do buffer da imagem
+   - Faz upload para Cloudinary
+   - Recebe URL da imagem
+   - Cria produto no banco com URL da imagem
+   - Retorna dados do produto
+   ↓
+8. CreateProductController.handle()
+   - Retorna res.json(product)
+   ↓
+9. Resposta HTTP 200 com dados do produto
+```
+
+---
+
+### Fluxo de Listagem com Query Params (Produtos)
+
+```
+1. GET /products?disabled=false
+   ↓
+2. Middleware: isAuthenticated
+   - Valida token JWT
+   - Se inválido → 401
+   ↓
+3. Middleware: validateSchema(listProductSchema)
+   - Valida query param 'disabled'
+   - Se não enviado → usa padrão "false"
+   - Se inválido (valor diferente de "true"/"false") → 400
+   - Converte string para boolean
+   - Adiciona ao req.query
+   ↓
+4. ListProductController.handle()
+   - Extrai 'disabled' do req.query
+   - Se undefined → usa false como padrão
+   - Instancia ListProductService
+   ↓
+5. ListProductService.execute()
+   - Busca produtos no banco com where: { disabled }
+   - Ordena por createdAt desc (mais recentes primeiro)
+   - Inclui dados da categoria relacionada
+   - Retorna array de produtos
+   ↓
+6. ListProductController.handle()
+   - Retorna res.status(200).json(products)
+   ↓
+7. Resposta HTTP 200 com array de produtos
 ```
 
 ---
@@ -808,19 +1613,12 @@ generator client {
 
 Cliente Prisma é gerado em `src/generated/prisma/`.
 
-**Datasource** (`prisma/schema.prisma` + `prisma.config.ts`):
+**Datasource**:
 
 ```prisma
 datasource db {
   provider = "postgresql"
-}
-```
-
-A URL de conexão é definida em `prisma.config.ts`:
-
-```typescript
-datasource: {
-  url: env("DATABASE_URL"),
+  url      = env("DATABASE_URL")
 }
 ```
 
@@ -870,12 +1668,27 @@ JWT_SECRET="sua-chave-secreta-aqui"
 
 # Server
 PORT=3333
+
+# Cloudinary (Upload de Imagens)
+CLOUDINARY_CLOUD_NAME="seu-cloud-name"
+CLOUDINARY_API_KEY="sua-api-key"
+CLOUDINARY_API_SECRET="seu-api-secret"
 ```
 
 **Variáveis Obrigatórias**:
 
 - `DATABASE_URL`: String de conexão PostgreSQL
 - `JWT_SECRET`: Chave secreta para assinar tokens JWT
+- `CLOUDINARY_CLOUD_NAME`: Nome da sua conta no Cloudinary
+- `CLOUDINARY_API_KEY`: Chave de API do Cloudinary
+- `CLOUDINARY_API_SECRET`: Chave secreta de API do Cloudinary
+
+**Como obter credenciais do Cloudinary**:
+
+1. Criar conta em [cloudinary.com](https://cloudinary.com)
+2. Acessar Dashboard
+3. Copiar credenciais: Cloud Name, API Key e API Secret
+4. Adicionar no arquivo `.env`
 
 ---
 
@@ -957,6 +1770,12 @@ npx prisma generate
 
 7. **Prisma Client Customizado**: Cliente gerado em `src/generated/prisma` para melhor organização.
 
+8. **Upload de Imagens**: Sistema utiliza Multer para processar uploads e Cloudinary para armazenamento permanente. Imagens não são salvas no servidor local.
+
+9. **Memory Storage**: Multer configurado com `memoryStorage()` para processar arquivos em memória, otimizando o upload direto para Cloudinary.
+
+10. **Validação de Tipos de Arquivo**: Sistema aceita apenas imagens JPEG, JPG e PNG com tamanho máximo de 4MB.
+
 ---
 
 ## 🚀 Como Iniciar o Projeto
@@ -974,21 +1793,115 @@ cp .env.example .env
 # Editar .env com suas configurações
 ```
 
-3. **Executar migrações**:
+**Variáveis obrigatórias no `.env`**:
+
+- `DATABASE_URL` - Conexão com PostgreSQL
+- `JWT_SECRET` - Chave secreta JWT
+- `CLOUDINARY_CLOUD_NAME` - Nome da conta Cloudinary
+- `CLOUDINARY_API_KEY` - API Key do Cloudinary
+- `CLOUDINARY_API_SECRET` - API Secret do Cloudinary
+
+3. **Configurar Cloudinary**:
+
+- Criar conta gratuita em [cloudinary.com](https://cloudinary.com)
+- Copiar credenciais do Dashboard
+- Adicionar credenciais no arquivo `.env`
+
+4. **Executar migrações**:
 
 ```bash
 npx prisma migrate dev
 ```
 
-4. **Iniciar servidor**:
+5. **Iniciar servidor**:
 
 ```bash
 npm run dev
 ```
 
-5. **Servidor rodando em**: `http://localhost:3333`
+6. **Servidor rodando em**: `http://localhost:3333`
 
 ---
 
-**Documento atualizado em**: 01/07/2026
-**Versão do Projeto**: 1.0.0
+## 📊 Resumo de Controllers e Services
+
+### **Controllers Implementados**
+
+#### User
+
+- `CreateUserController` - Cria novo usuário
+- `AuthUserController` - Autentica usuário (login)
+- `DetailUserController` - Retorna dados do usuário logado
+
+#### Category
+
+- `CreateCategoryController` - Cria nova categoria
+- `ListCategoryController` - Lista todas as categorias
+
+#### Product
+
+- `CreateProductController` - Cria produto com upload de imagem
+- `ListProductController` - Lista produtos com filtro de status
+- `DeleteProductController` - Desativa produto (soft delete)
+- `ListProductByCategoryController` - Lista produtos de uma categoria
+
+#### Order
+
+- `CreateOrderController` - Cria novo pedido
+- `AddItemController` - Adiciona item ao pedido
+- `RemoveItemController` - Remove item do pedido
+- `SendOrderController` - Envia pedido para cozinha
+- `FinishOrderController` - Finaliza pedido
+- `ListOrdersController` - Lista pedidos com filtro
+- `DetailOrderController` - Detalhes de um pedido
+- `DeleteOrderController` - Deleta pedido permanentemente
+
+### **Services Implementados**
+
+#### User
+
+- `CreateUserService` - Lógica de criação de usuário
+- `AuthUserService` - Lógica de autenticação
+- `DetailUserService` - Lógica de detalhes do usuário
+
+#### Category
+
+- `CreateCategoryService` - Lógica de criação de categoria
+- `ListCategoryService` - Lógica de listagem de categorias
+
+#### Product
+
+- `CreateProductService` - Lógica de criação com upload Cloudinary
+- `ListProductService` - Lógica de listagem com filtro
+- `DeleteProductService` - Lógica de soft delete
+- `ListProductByCategoryService` - Lógica de listagem por categoria
+
+#### Order
+
+- `CreateOrderService` - Lógica de criação de pedido
+- `AddItemOrderService` - Lógica de adição de item
+- `RemoveItemOrderService` - Lógica de remoção de item
+- `SendOrderService` - Lógica de envio do pedido
+- `FinishOrderService` - Lógica de finalização
+- `ListOrderService` - Lógica de listagem com filtro
+- `DetailOrderService` - Lógica de detalhes do pedido
+- `DeleteOrderService` - Lógica de deleção permanente
+
+---
+
+## 📚 Documentação Adicional
+
+Para informações detalhadas sobre cada endpoint, incluindo:
+
+- Exemplos completos de requisição e resposta
+- Todos os códigos de erro possíveis
+- Validações específicas de cada campo
+- Casos de uso e observações importantes
+
+Consulte o arquivo **[`endpoints.md`](./endpoints.md)**.
+
+---
+
+**Documento atualizado em**: 12/11/2025
+**Versão do Projeto**: 2.0.0
+**Última atualização**: Sistema completo com todas as funcionalidades de gerenciamento de pedidos (Orders) implementadas
