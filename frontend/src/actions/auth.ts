@@ -1,0 +1,49 @@
+"use server";
+
+import { apiClient } from "@/lib/api";
+import type { UserProps } from "@/lib/types";
+
+// api URL: http://localhost:3333/users
+
+export async function registerAction(
+  prevState: { success: boolean; error: string, redirectTo?: string } | null,
+  formData: FormData,
+) {
+
+  try {
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    const data = {
+      name,
+      email,
+      password,
+    };
+
+     await apiClient<UserProps>("users", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    return {
+      success: true,
+      error: "",
+      redirectTo: "/login",
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    console.error(error);
+
+    return {
+      success: false,
+      error: "Erro ao criar conta",
+    };
+  }
+}
