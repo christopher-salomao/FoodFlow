@@ -5,3 +5,11 @@ export interface UserProps {
   role: "ADMIN" | "STAFF";
   createdAt: string;
 }
+
+export interface AuthResponseProps {
+  id: string;
+  name: string;
+  email: string;
+  role: "ADMIN" | "STAFF";
+  token: string;
+}
