@@ -3,6 +3,8 @@
 import { apiClient } from "@/lib/api";
 import type { UserProps, AuthResponseProps } from "@/lib/types";
 
+import { setToken } from "@/lib/auth";
+
 // api URL: http://localhost:3333
 
 export async function registerAction(
@@ -65,7 +67,7 @@ export async function loginAction(
       body: JSON.stringify(data),
     });
 
-    console.log(response);
+    await setToken(response.token);
 
     return {
       success: true,
