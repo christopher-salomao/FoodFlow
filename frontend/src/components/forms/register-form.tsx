@@ -31,8 +31,6 @@ export function RegisterForm() {
           <Image
             src={logo}
             alt="Logo Food Flow"
-            width={200}
-            height={100}
             className="w-48 sm:w-64 h-auto"
             priority
           />

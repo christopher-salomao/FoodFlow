@@ -25,11 +25,11 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable}  antialiased`}
     >
       <body
         suppressHydrationWarning  /* configuração para evitar o erro de hydration pelo uso do ColorZilla no navegador */
-        className="min-h-full flex flex-col bg-app-background **:text-white"
+        className="min-h-full flex flex-col  bg-app-background **:text-white"
       >
         {children}
       </body>

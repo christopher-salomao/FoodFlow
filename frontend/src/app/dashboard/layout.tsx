@@ -1,4 +1,5 @@
 import { requiredAdmin } from "@/lib/auth";
+import { Sidebar } from "@/components/dashboard/sidebar";
 
 export default async function DashboardLayout({
   children,
@@ -8,8 +9,8 @@ export default async function DashboardLayout({
   const user = await requiredAdmin();
 
   return (
-    <div>
-      <h1>Bem vindo, {user?.name}</h1>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar userName={user?.name as string} /> { /* Sidebar desktop */ }
       {children}
     </div>
   );

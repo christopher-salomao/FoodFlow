@@ -48,11 +48,6 @@ export async function getUser(): Promise<UserProps | null> {
   }
 }
 
-export async function logout() {
-  await removeToken();
-  return "/login";
-}
-
 export async function requiredAdmin(): Promise<UserProps | undefined> {
   const user = await getUser();
 

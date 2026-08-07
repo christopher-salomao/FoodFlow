@@ -31,8 +31,6 @@ export function LoginForm() {
           <Image
             src={logo}
             alt="Logo Food Flow"
-            width={200}
-            height={100}
             className="w-48 sm:w-64 h-auto"
             priority
           />
@@ -70,7 +68,7 @@ export function LoginForm() {
               {isPending ? "Acessando conta..." : "Acessar"}
             </Button>
 
-            { state?.error && (
+            {state?.error && (
               <p className="text-sm text-center bg-red-100 py-3 rounded-md font-medium text-red-500!">
                 {state.error}
               </p>

@@ -3,7 +3,8 @@
 import { apiClient } from "@/lib/api";
 import type { UserProps, AuthResponseProps } from "@/lib/types";
 
-import { setToken } from "@/lib/auth";
+import { removeToken, setToken } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 // api URL: http://localhost:3333
 
@@ -50,7 +51,10 @@ export async function registerAction(
 }
 
 export async function loginAction(
-  prevState: { success: boolean; error: string; redirectTo?: string } | null | undefined,
+  prevState:
+    | { success: boolean; error: string; redirectTo?: string }
+    | null
+    | undefined,
   formData: FormData,
 ) {
   try {
@@ -82,4 +86,9 @@ export async function loginAction(
       };
     }
   }
+}
+
+export async function logoutAction() {
+  await removeToken();
+  redirect("/login");
 }
