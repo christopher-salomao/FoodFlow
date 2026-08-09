@@ -13,3 +13,9 @@ export interface AuthResponseProps {
   role: "ADMIN" | "STAFF";
   token: string;
 }
+
+export interface CategoryProps {
+  id: string;
+  name: string;
+  createdAt: string;
+}
