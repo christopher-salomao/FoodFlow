@@ -47,9 +47,13 @@ export function MobileSidebar() {
       <header className="sticky top-0 bg-app-sidebar border-b border-app-border">
         <div className="flex items-center justify-between h-16 px-4 py-8">
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger>
-              <Menu className="w-6 h-6" />
-            </SheetTrigger>
+            <SheetTrigger
+              render={
+                <Button>
+                  <Menu className="w-6 h-6" />
+                </Button>
+              }
+            />
 
             <SheetContent
               side="left"
