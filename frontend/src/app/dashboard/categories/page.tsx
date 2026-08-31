@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { CategoryProps } from "@/lib/types";
 import { Tags } from "lucide-react";
-import { CategoryForm } from "@/components/forms/category-form";
+import { CategoryForm } from "@/components/dashboard/category-form";
 
 export default async function Categories() {
   const token = await getToken();
