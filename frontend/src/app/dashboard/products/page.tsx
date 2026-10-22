@@ -5,6 +5,8 @@ import { CategoryProps, ProductProps } from "@/lib/types";
 import { Package } from "lucide-react";
 import { ProductForm } from "@/components/dashboard/product-form";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { DeleteButtonProduct } from "@/components/dashboard/delete-button";
 
 export default async function Products() {
   const token = await getToken();
@@ -57,9 +59,12 @@ export default async function Products() {
                 />
               </div>
               <CardHeader>
-                <CardTitle className="gap-2 flex items-center text-base md:text-lg">
-                  <Package className="w-5 h-5" />
-                  <span>{product.name}</span>
+                <CardTitle className="gap-2 flex items-center justify-between text-base md:text-lg">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-5 h-5" />
+                    <span>{product.name}</span>
+                  </div>
+                  <DeleteButtonProduct productId={product.id} />
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -67,7 +72,7 @@ export default async function Products() {
                   {product.description}
                 </p>
                 <div className="flex items-center justify-between pt-2 border-t border-app-border">
-                  <span className="text-brand-primary font-bold text-lg">
+                  <span className="text-brand-primary! font-bold text-lg">
                     {formatPrice(product.price)}
                   </span>
                   {product.category && (

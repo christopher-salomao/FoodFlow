@@ -30,7 +30,7 @@ class RegisterProductsService {
       throw new Error("Categoria não encontrada");
     }
 
-    const productExists = await prismaClient.product.findFirst({
+    /* const productExists = await prismaClient.product.findFirst({
       where: {
         name,
       },
@@ -38,7 +38,7 @@ class RegisterProductsService {
 
     if (productExists) {
       throw new Error("Produto já cadastrado");
-    }
+    } */
 
     // Enviar para o Cloudinary e pegar o link da imagem
     let bannerUrl: string;

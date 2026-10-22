@@ -35,31 +35,59 @@ export function ProductForm({ categories }: ProductFormProps) {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [priceValue, setPriceValue] = useState(formatToBRL("0"));
+  const [priceValue, setPriceValue] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const router = useRouter();
 
+  function convertBRLToCents(value: string): number {
+    const cleanedValue = value
+      .replace(/[R$\s]/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".");
+
+    const BRL = parseFloat(cleanedValue) || 0;
+
+    return Math.round(BRL * 100);
+  }
+
   async function handleCreateProduct(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData(e.currentTarget);
+    if (!imageFile) {
+      setIsLoading(false);
+      return;
+    }
+
+    const formData = new FormData();
+    const formElement = e.currentTarget;
+
+    const name = (formElement.elements.namedItem("name") as HTMLInputElement)
+      ?.value;
+    const description = (
+      formElement.elements.namedItem("description") as HTMLInputElement
+    )?.value;
+    const princeInCents = convertBRLToCents(priceValue);
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", princeInCents.toString());
     formData.append("category_id", selectedCategory);
+    formData.append("banner", imageFile);
 
     const result = await createProductAction(formData);
 
-    setIsLoading(false);
-
     if (result.success) {
+      setIsLoading(false);
       setOpen(false);
-      setSelectedCategory("");
       router.refresh();
       return;
     } else {
-      console.log(result.error);
-      alert(result.error);
+      setIsLoading(false);
+      console.error(result.error);
+      return;
     }
   }
 
@@ -170,6 +198,8 @@ export function ProductForm({ categories }: ProductFormProps) {
               value={selectedCategory}
               onValueChange={(value) => setSelectedCategory(value ?? "")}
               required
+              // id="category"
+              // name="category"
             >
               <SelectTrigger className="border-app-border bg-app-background text-white">
                 <SelectValue placeholder="Selecione uma categoria" />

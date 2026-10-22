@@ -1,9 +1,8 @@
-export default function Dashboard() {
-  return (
-    <div className="">
-      <div className="">
-        <h1>Dashboard</h1>
-      </div>
-    </div>
-  );
+import { getToken } from "@/lib/auth";
+import { ContentOrders } from "./contentOrders";
+
+export default async function Dashboard() {
+  const token = await getToken();
+
+  return <ContentOrders token={token!} />;
 }

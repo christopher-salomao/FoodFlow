@@ -35,3 +35,25 @@ export interface ProductProps {
     name: string;
   };
 }
+
+export interface OrderItemProps {
+  id: string;
+  amount: number;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    description: string;
+    banner: string;
+  };
+}
+
+export interface OrderProps {
+  id: string;
+  table: number;
+  customer_name?: string;
+  status: boolean; // false = in production, true = finished
+  draft: boolean; // false = sended to kitchen, true = waiter is taking the order
+  createdAt: string;
+  order_items?: OrderItemProps[];
+}
