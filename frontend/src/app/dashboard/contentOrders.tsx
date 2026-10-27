@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { OrderModal } from "@/components/dashboard/order-modal";
 import { Eye, RefreshCcw } from "lucide-react";
 
 import type { OrderProps } from "@/lib/types";
@@ -18,6 +19,7 @@ interface ContentOrdersProps {
 export function ContentOrders({ token }: ContentOrdersProps) {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [orderSelected, setOrderSelected] = useState<string | null>(null);
 
   async function fetchOrders() {
     try {
@@ -27,9 +29,7 @@ export function ContentOrders({ token }: ContentOrdersProps) {
         token,
       });
 
-      const pendingOrders = response.filter(
-        (order) => !order.status
-      );
+      const pendingOrders = response.filter((order) => !order.status);
 
       setOrders(pendingOrders);
       setLoading(false);
@@ -72,7 +72,10 @@ export function ContentOrders({ token }: ContentOrdersProps) {
           </p>
         </div>
 
-        <Button onClick={async () => await fetchOrders()} className="bg-white hover:bg-gray-200">
+        <Button
+          onClick={async () => await fetchOrders()}
+          className="bg-white hover:bg-gray-200"
+        >
           <RefreshCcw
             className={`w-5 h-5 ${loading ? "animate-spin" : ""}`}
             color="black"
@@ -132,20 +135,37 @@ export function ContentOrders({ token }: ContentOrdersProps) {
 
                 <div className="flex flex-col xl:flex-row items-center justify-between pt-4 border-t border-app-border gap-3">
                   <div className="flex flex-col gap-1 self-start">
-                    <p className="text-sm text-gray-400! md:text-base">Total:</p>
+                    <p className="text-sm text-gray-400! md:text-base">
+                      Total:
+                    </p>
                     <p className="font-bold text-base lg:text-lg text-brand-primary!">
                       {formatCurrency(claculeteOrderTotal(order))}
                     </p>
                   </div>
 
-                  <Button size="sm" className="bg-brand-primary hover:bg-brand-primary/80 w=full xl-w-auto">
-                     <Eye className=" h-5 w-5" /> Detalhes
+                  <Button
+                    onClick={() => setOrderSelected(order.id)}
+                    size="sm"
+                    className="bg-brand-primary hover:bg-brand-primary/80 w-full xl:w-auto"
+                  >
+                    <Eye className=" h-5 w-5" /> Detalhes
                   </Button>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      )}
+
+      {orderSelected && (
+        <OrderModal
+          orderId={orderSelected}
+          token={token}
+          onClose={async () => {
+            setOrderSelected(null);
+            await fetchOrders();
+          }}
+        />
       )}
     </div>
   );
