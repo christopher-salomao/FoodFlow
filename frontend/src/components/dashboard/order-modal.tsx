@@ -10,8 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { apiClient } from "@/lib/api";
+import { finishOrderAction } from "@/actions/orders";
 import type { OrderProps } from "@/lib/types";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"
 
 import { formatCurrency } from "@/lib/utils";
 
@@ -25,6 +27,8 @@ export function OrderModal({ orderId, token, onClose }: OrderModalProps) {
   const [order, setOrder] = useState<OrderProps | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+
   async function fetchOrder() {
     try {
       if (!orderId) {
@@ -33,14 +37,16 @@ export function OrderModal({ orderId, token, onClose }: OrderModalProps) {
         return;
       }
 
-      const response = await apiClient<OrderProps>(`order/details?order_id=${orderId}`, {
-        method: "GET",
-        token,
-      });
+      const response = await apiClient<OrderProps>(
+        `order/details?order_id=${orderId}`,
+        {
+          method: "GET",
+          token,
+        },
+      );
 
       setOrder(response);
       setLoading(false);
-
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -66,10 +72,26 @@ export function OrderModal({ orderId, token, onClose }: OrderModalProps) {
     loadOrder();
   }, [orderId]);
 
+  async function handleFinishOrder() {
+    if (!orderId) return;
+
+    const result = await finishOrderAction(orderId);
+
+    if (!result?.success) {
+      console.error(result?.error);
+    }
+
+    if (result?.success) {
+      router.refresh();
+      onClose();
+    }
+
+  }
+
   return (
     <Dialog open={orderId !== null} onOpenChange={onClose}>
       <DialogContent
-        className="p-6 pl-8 bg-app-card max-w-2xl max-h-[90vh]  overflow-auto scrollbar-thumb-transparent scrollbar-thin"
+        className="p-6 bg-app-card max-w-2xl max-h-[90vh]  overflow-auto scrollbar-thumb-brand-primary scrollbar-thin"
         showCloseButton={false}
       >
         <DialogHeader>
@@ -171,6 +193,7 @@ export function OrderModal({ orderId, token, onClose }: OrderModalProps) {
           <Button
             className="flex-1 bg-brand-primary hover:bg-brand-primary/90 font-semibold"
             disabled={loading}
+            onClick={handleFinishOrder}
           >
             Finalizar pedido
           </Button>
