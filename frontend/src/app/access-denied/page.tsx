@@ -4,10 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 import { logoutAction } from "@/actions/auth";
+import { getUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 import logo from "@/assets/logo.png";
 
-export default function AccessDenied() {
+export default async function AccessDenied() {
+  const user = await getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full">
